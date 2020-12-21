@@ -1,4 +1,5 @@
 fname = "bitrise.yml"
+root = pathlib.Path(__file__).parent.resolve()
 
 new_stack = 'osx-xcode-12.1.x'
 
