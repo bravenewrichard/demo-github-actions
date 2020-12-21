@@ -2,9 +2,8 @@ name: github actions Demo
 
 on: 
   push:
-    branches:  master
-  paths-ignore:
-    bitrise.yml
+    branches: master
+    paths-ignore: bitrise.yml
 
 jobs:
   build:
