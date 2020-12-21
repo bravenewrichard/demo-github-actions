@@ -27,3 +27,10 @@ jobs:
     - name: Modify bitrise.yml 
       run: |
         python yamler2.py
+    - name: Commit and push if bitrise.yml changed
+      run: |-
+        git diff
+        git config --global user.email "bitrise-yml-bot@example.com"
+        git config --global user.name "BITRISE.YML-bot"
+        git diff --quiet || (git add bitrise.yml && git commit -m "Updated bitrise.yml")
+        git push
