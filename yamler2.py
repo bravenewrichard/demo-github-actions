@@ -15,10 +15,7 @@ with open(fname, 'w') as f:
     f.write(s)
 """
 
-
-
 bitriseyml = root / "bitrise.yml"
-index_txt = "\n".join(index).strip()
 bitriseyml_contents = bitriseyml.open().read()
 bitriseyml_contents = bitriseyml_contents.replace('<stack>', new_stack)
 bitriseyml.open("w").write(bitriseyml_contents)
