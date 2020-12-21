@@ -39,8 +39,6 @@ workflows:
             envman add --key SEMVER_PREV --valuefile SEMVER_PREV
             echo $SEMVER_PREV
 
-            envman add --key SEMVER --value "osx-xcode-11.2.x"
-
 
         is_always_run: true
     - script@1:
@@ -63,6 +61,7 @@ workflows:
             set -e
             # debug log
             set -x
+            xcodebuild -version
         title: Build firefox-iOS
     - cache-push@2:
         inputs:
