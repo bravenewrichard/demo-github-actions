@@ -3,6 +3,8 @@ name: github actions Demo
 on: 
   push:
     branches:  master
+  paths-ignore:
+    bitrise.yml
 
 jobs:
   build:
@@ -14,11 +16,12 @@ jobs:
         python-version: [3.7]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -27,6 +30,8 @@ jobs:
     - name: Modify bitrise.yml 
       run: |
         python yamler2.py
+        cat bitrise.yml
+
     - name: Commit and push if bitrise.yml changed
       run: |-
         git diff
