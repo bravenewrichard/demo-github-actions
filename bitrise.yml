@@ -58,8 +58,9 @@ workflows:
             echo 
             echo $SEMVER_PREV
             curl https://bootstrap.pypa.io/3.2/get-pip.py -o python3.2
-            pip3 install -r ./requirements.txt
             pip3 freeze
+            pip3 install semver
+            pip3 install -r ./requirements.txt
             python3 ./run.py
             echo "======================="
             echo "SEMVER_PREV WRITTEN BY: run.py"
