@@ -70,5 +70,5 @@ workflows:
     - deploy-to-bitrise-io@1: {}
     meta:
       bitrise.io:
-        stack: osx-xcode-12.1.x
+        stack: osx-xcode-12.1.x 
 

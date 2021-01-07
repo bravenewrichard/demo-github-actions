@@ -1,0 +1,94 @@
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+format_version: '8'
+project_type: other
+trigger_map:
+- push_branch: '*'
+  workflow: primary
+- pull_request_source_branch: '*'
+  workflow: primary
+workflows:
+  primary:
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.3.x
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@4: {}
+    - cache-pull@2:
+        inputs:
+        - is_debug_mode: 'true'
+        is_always_run: true
+    - script@1:
+        inputs:
+        - content: '#!/usr/bin/env bash
+
+            set -ex
+
+            set +x
+
+
+            echo "================"
+
+            echo "XCODEBUILD VERSION"
+
+            echo "================"
+
+
+            xcodebuild -version
+
+            echo "================"
+
+            echo "FILE: SEMVER_PREV"
+
+            echo "================"
+
+            cat SEMVER_PREV
+
+
+            echo "ADDING ENV VAR"
+
+            envman add --key SEMVER_PREV --valuefile SEMVER_PREV
+
+            echo $SEMVER_PREV
+
+
+
+            '
+        is_always_run: true
+        title: Check if XCode version changed
+    - script@1:
+        inputs:
+        - content: "#!/usr/bin/env bash\n# fail if any commands fails\nset -e\n# debug\
+            \ log\nset +x\necho \"=======================\"\necho \"READING ENV VAR\"\
+            \necho \"=======================\"\necho \necho \"CONTENTS of SEMVER_PREV\
+            \ ENV VAR....\"\necho\necho $SEMVER_PREV\n\n\ncurl https://bootstrap.pypa.io/3.2/get-pip.py\
+            \ -o python3.2\npip3 install -r ./requirements.txt\npython3 ./run.py\n\
+            \n\necho \"=======================\"\necho \"SEMVER_PREV WRITTEN BY: run.py\"\
+            \necho \"=======================\"\necho \necho \"CONTENTS of SEMVER_PREV\
+            \ FILE....\"\necho\ncat ./SEMVER_PREV\necho \necho \"A.B.C\" > SEMVER_PREV\n\
+            \n\n\n\n"
+        is_always_run: true
+        title: Get latest XCode version
+    - script@1:
+        inputs:
+        - content: '#!/usr/bin/env bash
+
+            # fail if any commands fails
+
+            set -e
+
+            # debug log
+
+            set -x
+
+            xcodebuild -version'
+        title: Build firefox-iOS
+    - cache-push@2:
+        inputs:
+        - is_debug_mode: 'true'
+        - cache_paths: 'SEMVER_PREV
+
+
+            '
+    - deploy-to-bitrise-io@1: {}
